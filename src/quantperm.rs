@@ -26,6 +26,16 @@ pub type Dimension = u64;
 /// - Σ (structural_value): accumulates net_work only; monotonic.
 /// Irreversibility: any movement pays full manifold cost (CW+CCW),
 /// amortized by Σ; post-quantum anchoring preserved.
+
+#[repr(C)]
+#[derive(Debug)]
+pub struct TransitionHeritage {
+    pub tau: u128,
+    pub delta: u128,
+    pub gross_work: u128,
+    pub net_work: u128,
+}
+
 pub struct QuantPerm {
     perm: Perm,
     retained_mass: u128,    // E: conserved inertia
@@ -68,51 +78,55 @@ impl QuantPerm {
     /// - Σ credit application
     /// - dimensional mutation
     ///
-    /// Returns a Gravity receipt representing the post-transition field.
-    pub fn transition(&mut self, provided_seed: Option<&[u8]>) -> Gravity {
-        // ── 1. Resolve deterministic field constants ──
+    /// Returns a receipt representing the post-transition field.
+  pub fn transition(&mut self, provided_seed: Option<&[u8]>) -> TransitionHeritage {
+        // ── 1. Field constants ──
         let euclid = match provided_seed {
             Some(seed) => Euclid::from_seed(seed),
-            None => *Euclid::genesis(), 
+            None => *Euclid::genesis(),
         };
 
-        let reference_dimension = self.dimension;
-        let mirror = Mirror::collapse(&euclid, reference_dimension as u128);
+        let from = self.dimension;
+        let mirror = Mirror::collapse(&euclid, from as u128);
 
-        // ── 2. Deterministically derive destination ──
+        // ── 2. Destination ──
         let mut hasher = blake3::Hasher::new();
         hasher.update(b"TRANSITION");
         hasher.update(mirror.bytes());
         hasher.update(&self.activation_count.to_le_bytes());
 
         let hash = hasher.finalize();
-        // Panic-free hash extraction
+
         let mut bytes = [0u8; 8];
         bytes.copy_from_slice(&hash.as_bytes()[..8]);
-        let new_dimension = u64::from_le_bytes(bytes);
 
-        // ── 3. Compute raw physics (pure) ──
-        let (_tau, _delta, gross_work) = Self::calculate_work(
+        let to = u64::from_le_bytes(bytes);
+
+        // ── 3. Physics (FULL) ──
+        let (tau, delta, gross_work) = Self::calculate_work(
             self.retained_mass,
             mirror.bytes(),
-            reference_dimension,
-            new_dimension,
+            from,
+            to,
         );
 
-        // ── 4. Apply Σ credit (thermodynamic escape) ──
+        // ── 4. Σ credit ──
         let net_work = gross_work.saturating_sub(self.structural_value);
-
-        // Σ only increases by work actually paid
         self.structural_value = self.structural_value.saturating_add(net_work);
 
-        // ── 5. Commit irreversible state ──
-        self.dimension = new_dimension;
+        // ── 5. Commit state ──
+        self.dimension = to;
         self.activation_count += 1;
 
-       // ── 6. Emit post-state gravity receipt ──
-     Gravity::derive(self.retained_mass, mirror.bytes())
-
+        // ── 6. Return FULL RECEIPT ──
+        TransitionHeritage {
+            tau,
+            delta,
+            gross_work,
+            net_work,
+        }
     }
+
     
     /// physics: total-manifold work for a transition.
     ///
