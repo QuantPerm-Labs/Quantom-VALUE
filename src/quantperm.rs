@@ -34,6 +34,7 @@ pub struct TransitionHeritage {
     pub delta: u128,
     pub gross_work: u128,
     pub net_work: u128,
+    pub origin: SeedType
 }
 
 pub struct QuantPerm {
@@ -85,6 +86,7 @@ impl QuantPerm {
             Some(seed) => Euclid::from_seed(seed),
             None => *Euclid::genesis(),
         };
+        let origin = euclid.seed_type();
 
         let from = self.dimension;
         let mirror = Mirror::collapse(&euclid, from as u128);
@@ -124,6 +126,7 @@ impl QuantPerm {
             delta,
             gross_work,
             net_work,
+            origin,
         }
     }
 
