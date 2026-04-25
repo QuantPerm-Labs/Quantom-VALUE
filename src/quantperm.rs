@@ -3,7 +3,7 @@ use blake3;
 
 use crate::gravity::{Gravity};
 use crate::perm::Perm;
-use crate::euclid::Euclid;
+use crate::euclid::{Euclid, SeedType};
 use crate::mirror::Mirror;
 pub type Dimension = u64;
 
