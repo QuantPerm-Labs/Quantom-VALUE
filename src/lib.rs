@@ -8,3 +8,4 @@ mod observer;
 pub use perm::Perm;
 pub use quantperm::{QuantPerm, Dimension};
 pub use observer::{Observer, DimensionObservation};
+pub use euclid::SeedType;
