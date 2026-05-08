@@ -113,9 +113,14 @@ impl QuantPerm {
         );
 
         // ── 4. Σ credit ──
-       let net_work = gross_work / self.structural_value;
-        self.structural_value = self.structural_value.saturating_add(net_work);
+       // ── 4. Σ credit ──
+       let net_work = if self.structural_value == 0 {
+       gross_work
+       } else {
+        gross_work / self.structural_value
+        };
 
+self.structural_value = self.structural_value.saturating_add(net_work);
         // ── 5. Commit state ──
         self.dimension = to;
         self.activation_count += 1;
