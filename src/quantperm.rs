@@ -67,9 +67,9 @@ impl QuantPerm {
 ///
 /// This does not mutate geometry or trigger transitions.
 /// Retained mass influences future work calculations only.
-    pub fn retain(&mut self, mass: u128) {
-       self.retained_mass = self.retained_mass.saturating_add(mass);
-}
+   pub fn retain(&self, mass: u128, to: Dimension) -> Retain {
+        Retain { mass, to }
+    }
     /// Initialize dimension from PERM geometry.
     /// Wrap-around semantics explicitly documented.
     pub fn set_initial_dimension_from_perm(&mut self) {
