@@ -97,16 +97,7 @@ impl QuantPerm {
         let mirror = Mirror::collapse(&euclid, from as u128);
 
         // ── 2. Destination ──
-        let mut hasher = blake3::Hasher::new();
-        hasher.update(b"TRANSITION");
-        hasher.update(mirror.bytes());
-        hasher.update(&self.activation_count.to_le_bytes());
-
-        let hash = hasher.finalize();
-
-        let mut bytes = [0u8; 8];
-        bytes.copy_from_slice(&hash.as_bytes()[..8]);
-
+        
         let to = retain.to;
         let retained_mass = retain.mass;
 
