@@ -107,7 +107,7 @@ impl QuantPerm {
         let mut bytes = [0u8; 8];
         bytes.copy_from_slice(&hash.as_bytes()[..8]);
 
-        let to = u64::from_le_bytes(bytes);
+        let to = retain.to;
 
         // ── 3. Physics (FULL) ──
         let (tau, delta, gross_work) = Self::calculate_work(
