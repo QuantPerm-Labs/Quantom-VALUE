@@ -45,6 +45,11 @@ pub struct QuantPerm {
     structural_value: u128, // Σ: accumulated work residue
 }
 
+pub struct Retain {
+    pub mass: u128,
+    pub to: Dimension,
+}
+
 impl QuantPerm {
     pub fn new(perm: Perm) -> Self {
         Self {
