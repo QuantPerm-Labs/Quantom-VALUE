@@ -108,10 +108,11 @@ impl QuantPerm {
         bytes.copy_from_slice(&hash.as_bytes()[..8]);
 
         let to = retain.to;
+        let retained_mass = retain.mass;
 
         // ── 3. Physics (FULL) ──
         let (tau, delta, gross_work) = Self::calculate_work(
-            self.retained_mass,
+            retained_mass,
             mirror.bytes(),
             from,
             to,
