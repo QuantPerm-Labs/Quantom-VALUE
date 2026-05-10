@@ -114,6 +114,7 @@ impl QuantPerm {
         self.structural_value = self.structural_value.saturating_add(net_work);
       
         // ── 5. Commit state ──
+        self.retained_mass = retained_mass;
         self.dimension = to;
         self.activation_count += 1;
 
