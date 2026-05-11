@@ -68,7 +68,13 @@ impl QuantPerm {
 /// This does not mutate geometry or trigger transitions.
 /// Retained mass influences future work calculations only.
    pub fn retain(&self, mass: u128, to: Dimension) -> Retain {
-        Retain { mass, to }
+
+        let net_work =
+        gross_work.saturating_sub(
+            self.structural_value
+        );
+
+        Retain { mass, to, net_work}
     }
     /// Initialize dimension from PERM geometry.
     /// Wrap-around semantics explicitly documented.
