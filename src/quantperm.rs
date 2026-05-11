@@ -48,7 +48,6 @@ pub struct QuantPerm {
 pub struct Retain {
     pub mass: u128,
     pub to: Dimension,
-    pub net_work: u128,
 }
 
 impl QuantPerm {
@@ -69,28 +68,7 @@ impl QuantPerm {
 /// This does not mutate geometry or trigger transitions.
 /// Retained mass influences future work calculations only.
    pub fn retain(&self, mass: u128, to: Dimension) -> Retain {
-
-        let from = self.dimension;
-
-          // deterministic mirror anchor
-        let euclid = Euclid::genesis();
-        let mirror = Mirror::collapse(euclid, from as u128);
-
-        let (_, _, gross_work) = Self::calculate_work(
-        mass,
-        mirror.bytes(),
-        from,
-        to,
-    );
-
-
-
-        let net_work =
-        gross_work.saturating_sub(
-            self.structural_value
-        );
-
-        Retain { mass, to, net_work}
+        Retain { mass, to}
     }
     /// Initialize dimension from PERM geometry.
     /// Wrap-around semantics explicitly documented.
