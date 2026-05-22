@@ -6,7 +6,7 @@ pub struct Gravity {
 
 impl Gravity {
     pub fn derive(retained_mass: u128, mirror: &[u8; 32]) -> Self {
-        let c = mirror_u128(mirror);
+        let c = mirror;
 
         // E
         let e = retained_mass;
