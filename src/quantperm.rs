@@ -149,71 +149,55 @@ impl QuantPerm {
     to: Dimension,
 ) -> (u128, u128, u128) {
 
-    // ─────────────────────────────────────────────
-    // 1. Build dual field geometry (IMPORTANT FIX)
-    // ─────────────────────────────────────────────
+    // ─────────────────────────────
+    // 1. Mirror field (BIAS SOURCE)
+    // ─────────────────────────────
+    let mirror_from = BiasMirror::collapse(euclid, from as u128);
+    let mirror_to   = BiasMirror::collapse(euclid, to as u128);
 
-    let mirror_from = Mirror::collapse(euclid, from as u128);
-    let mirror_to   = Mirror::collapse(euclid, to as u128);
+    let c_from = mirror_from.as_u128();
+    let c_to   = mirror_to.as_u128();
 
-    let bias_from = BiasMirror::collapse(euclid, from as u128);
-    let bias_to   = BiasMirror::collapse(euclid, to as u128);
+    // ─────────────────────────────
+    // 2. Gravity field (resistance τ)
+    // ─────────────────────────────
+    let gravity = Gravity::derive(
+        retained_mass,
+        mirror_from.bytes(),
+    );
 
-    // ─────────────────────────────────────────────
-    // 2. Construct full curvature tensor input
-    // ─────────────────────────────────────────────
-
-    let mut field_mix = [0u8; 32];
-
-    for i in 0..32 {
-        field_mix[i] =
-            mirror_from.bytes()[i]
-            ^ mirror_to.bytes()[i]
-            ^ bias_from.bytes()[i]
-            ^ bias_to.bytes()[i];
-    }
-
-
-        let map_to_180 = |d: u64| -> u128 {
-    (d as u128)
-        .saturating_mul(180)
-        .saturating_div(u64::MAX as u128)
-};
-    // ─────────────────────────────────────────────
-    // 3. Resistance magnitude τ (full-field aware)
-    // ─────────────────────────────────────────────
-
-    let gravity = Gravity::derive(retained_mass, &field_mix);
     let tau = gravity.tau;
 
-    // ─────────────────────────────────────────────
-    // 4. Geodesic Δ (curved manifold distance)
-    // ─────────────────────────────────────────────
+    // ─────────────────────────────
+    // 3. Proper directional curvature
+    // ─────────────────────────────
 
-    let forward_cost: u128 = {
-        let diff = to.wrapping_sub(from);
-        map_to_180(diff)
+    let raw_diff = if to >= from {
+        to - from
+    } else {
+        from - to
     };
 
-    let backward_cost: u128 = {
-        let diff = from.wrapping_sub(to);
-        map_to_180(diff)
-    };
+    // Inject geometric asymmetry
+    let bias_diff =
+        (c_from ^ c_to)
+            .wrapping_add(raw_diff as u128);
 
-    // Bias correction: curvature asymmetry (key fix)
-    let curvature_bias = {
-        let b = BiasMirror::collapse(euclid, from as u128);
-        let bias_scalar = mirror_u128(b.bytes()) % 180;
-        bias_scalar
-    };
+    // CW path is not mirror of CCW anymore
+    let cw  = bias_diff;
+    let ccw = bias_diff.rotate_left(17) ^ c_to;
 
-    let delta = forward_cost
-        .saturating_add(backward_cost)
-        .saturating_add(curvature_bias);
+    // ─────────────────────────────
+    // 4. Non-symmetric Δ (key fix)
+    // ─────────────────────────────
 
-    // ─────────────────────────────────────────────
-    // 5. Gross work (manifold integral)
-    // ─────────────────────────────────────────────
+    let delta = cw
+        .saturating_add(ccw)
+        .saturating_add((c_from & c_to) >> 4);
+
+    // ─────────────────────────────
+    // 5. Gross work
+    // ─────────────────────────────
 
     let gross_work = tau.saturating_mul(delta);
 
