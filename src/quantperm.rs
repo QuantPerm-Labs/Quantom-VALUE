@@ -140,13 +140,11 @@ impl QuantPerm {
         from: Dimension,
         to: Dimension,
     ) -> (u128, u128, u128) {
-        let e = retained_mass;
-        let c = mirror(&euclid.constant());
-
+        
         let gravity =
         Gravity::derive(
-            e,
-            c,
+            retained_mass,
+            mirror(&euclid.constant()),
         );
 
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
