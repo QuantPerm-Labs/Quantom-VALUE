@@ -135,13 +135,19 @@ impl QuantPerm {
     /// Work = τ × Δ, where τ = sqrt(E^2 + C^2).
     /// Returns (τ, Δ, gross_work).
     pub fn calculate_work(
-        gravity: &Gravity,
+        retained_mass: u128,
         mirror_bytes: &[u8; 32],
         from: Dimension,
         to: Dimension,
     ) -> (u128, u128, u128) {
         let e = retained_mass;
         let c = mirror_u128(mirror_bytes);
+
+        let gravity =
+        Gravity::derive(
+            retained_mass,
+            mirror_bytes,
+        );
 
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
         let tau = gravity.tau;
