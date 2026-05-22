@@ -193,7 +193,7 @@ impl QuantPerm {
 
 /// Project mirror bytes into u128 space.
 /// XOR both halves to avoid bias and use full entropy.
-fn mirror_u128(mirror: &[u8; 32]) -> u128 {
+pub fn mirror_u128(mirror: &[u8; 32]) -> u128 {
     let mut lo = [0u8; 16];
     let mut hi = [0u8; 16];
     lo.copy_from_slice(&mirror[..16]);
