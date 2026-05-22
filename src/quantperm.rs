@@ -152,22 +152,18 @@ impl QuantPerm {
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
         let tau = gravity.tau;
         // Full manifold: sum of CW and CCW arcs
-        let diff = if to >= from { to - from } else { from - to };
+       let delta =
+    (to as u128)
+        .wrapping_sub(from as u128);
 
-        let map_to_180 = |d: u64| -> u128 {
-            (d as u128)
-                .saturating_mul(180)
-                .saturating_div(u64::MAX as u128)
-        };
+// ─────────────────────────────────────
+// Energetic traversal cost
+// ─────────────────────────────────────
+    let gross_work =
+    tau.saturating_mul(delta);
 
-        let delta_cw = map_to_180(diff);
-        let delta_ccw = map_to_180(u64::MAX - diff);
-        let delta = delta_cw.saturating_add(delta_ccw);
-
-        // Work = τ × Δ
-        let gross_work = tau.saturating_mul(delta);
-        (tau, delta, gross_work)
-    }
+// Full traversal state
+(tau, delta, gross_work)
 
     // ── Read-only observers ──
 
