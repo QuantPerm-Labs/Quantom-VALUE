@@ -97,8 +97,15 @@ impl QuantPerm {
         
 
         // ── 2. Destination ──
+
+      let forward =
+        Mirror::collapse(
+            &euclid,
+            from as u128,
+        );
         
-        let to = self.dimension;
+        let to =
+        forward.as_u128() as Dimension;
         let retained_mass = retain.mass;
 
         // ── 3. Physics (FULL) ──
