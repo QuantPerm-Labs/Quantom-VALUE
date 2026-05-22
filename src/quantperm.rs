@@ -135,7 +135,7 @@ impl QuantPerm {
     /// Work = τ × Δ, where τ = sqrt(E^2 + C^2).
     /// Returns (τ, Δ, gross_work).
     pub fn calculate_work(
-        retained_mass: u128,
+        gravity: &Gravity,
         mirror_bytes: &[u8; 32],
         from: Dimension,
         to: Dimension,
@@ -144,8 +144,7 @@ impl QuantPerm {
         let c = mirror_u128(mirror_bytes);
 
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
-        let tau = integer_sqrt(e.saturating_mul(e).saturating_add(c.saturating_mul(c)));
-
+        let tau = gravity.tau;
         // Full manifold: sum of CW and CCW arcs
         let diff = if to >= from { to - from } else { from - to };
 
