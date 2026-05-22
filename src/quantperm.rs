@@ -142,47 +142,76 @@ impl QuantPerm {
     /// Work = τ × Δ, where τ = sqrt(E^2 + C^2).
     /// Returns (τ, Δ, gross_work).
     pub fn calculate_work(
-        euclid: &Euclid,
-        retained_mass: u128,
-        from: Dimension,
-        to: Dimension,
-    ) -> (u128, u128, u128) {
+    euclid: &Euclid,
+    retained_mass: u128,
+    from: Dimension,
+    to: Dimension,
+) -> (u128, u128, u128) {
 
-        let c = Mirror::collapse(euclid, u128::from(from));
-        
-        let gravity =
-        Gravity::derive(
-            retained_mass,
-            c.bytes(),
-        );
+    // ─────────────────────────────────────────────
+    // 1. Build dual field geometry (IMPORTANT FIX)
+    // ─────────────────────────────────────────────
 
-        // Resistance magnitude: τ = sqrt(E^2 + C^2)
-        let tau = gravity.tau;
+    let mirror_from = Mirror::collapse(euclid, from as u128);
+    let mirror_to   = Mirror::collapse(euclid, to as u128);
 
-        let diff = if to >= from {to - from} else {from - to};
+    let bias_from = BiasMirror::collapse(euclid, from as u128);
+    let bias_to   = BiasMirror::collapse(euclid, to as u128);
 
-       let map_to_180 = |d: u64| -> u128 {
-            (d as u128)
-                .saturating_mul(180)
-                .saturating_div(u64::MAX as u128)
-        };
+    // ─────────────────────────────────────────────
+    // 2. Construct full curvature tensor input
+    // ─────────────────────────────────────────────
 
-        let delta_cw =
-            map_to_180(diff);
+    let mut field_mix = [0u8; 32];
 
-        let delta_ccw =
-            map_to_180(u64::MAX - diff);
-
-        let delta =
-            delta_cw.saturating_add(delta_ccw);
-
-        let gross_work =
-            tau.saturating_mul(delta);
-
-        (tau, delta, gross_work)
+    for i in 0..32 {
+        field_mix[i] =
+            mirror_from.bytes()[i]
+            ^ mirror_to.bytes()[i]
+            ^ bias_from.bytes()[i]
+            ^ bias_to.bytes()[i];
     }
 
+    // ─────────────────────────────────────────────
+    // 3. Resistance magnitude τ (full-field aware)
+    // ─────────────────────────────────────────────
 
+    let gravity = Gravity::derive(retained_mass, &field_mix);
+    let tau = gravity.tau;
+
+    // ─────────────────────────────────────────────
+    // 4. Geodesic Δ (curved manifold distance)
+    // ─────────────────────────────────────────────
+
+    let forward_cost: u128 = {
+        let diff = to.wrapping_sub(from);
+        map_to_180(diff)
+    };
+
+    let backward_cost: u128 = {
+        let diff = from.wrapping_sub(to);
+        map_to_180(diff)
+    };
+
+    // Bias correction: curvature asymmetry (key fix)
+    let curvature_bias = {
+        let b = BiasMirror::collapse(euclid, from as u128);
+        let bias_scalar = mirror_u128(b.bytes()) % 180;
+        bias_scalar
+    };
+
+    let delta = forward_cost
+        .saturating_add(backward_cost)
+        .saturating_add(curvature_bias);
+
+    // ─────────────────────────────────────────────
+    // 5. Gross work (manifold integral)
+    // ─────────────────────────────────────────────
+
+    let gross_work = tau.saturating_mul(delta);
+
+    (tau, delta, gross_work)
+}
     // ── Read-only observers ──
 
     pub fn retained_mass(&self) -> u128 {
