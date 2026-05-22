@@ -157,24 +157,29 @@ impl QuantPerm {
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
         let tau = gravity.tau;
 
-    let from_lens =
-    Mirror::collapse(euclid, from as u128);
+        let diff = if to >= from {to - from} else {from - to};
 
-    let to_lens =
-    Mirror::collapse(euclid, to as u128);
+       let map_to_180 = |d: u64| -> u128 {
+            (d as u128)
+                .saturating_mul(180)
+                .saturating_div(u64::MAX as u128)
+        };
 
-// directional manifold displacement
-let delta =
-    from_lens.as_u128()
-    ^ to_lens.as_u128();
-// ─────────────────────────────────────
-// Energetic traversal cost
-// ─────────────────────────────────────
-    let gross_work =
-    tau.saturating_mul(delta);
+        let delta_cw =
+            map_to_180(diff);
 
-// Full traversal state
-(tau, delta, gross_work)}
+        let delta_ccw =
+            map_to_180(u64::MAX - diff);
+
+        let delta =
+            delta_cw.saturating_add(delta_ccw);
+
+        let gross_work =
+            tau.saturating_mul(delta);
+
+        (tau, delta, gross_work)
+    }
+
 
     // ── Read-only observers ──
 
