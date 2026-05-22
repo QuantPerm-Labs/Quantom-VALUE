@@ -153,7 +153,7 @@ impl QuantPerm {
         let gravity =
         Gravity::derive(
             retained_mass,
-            c,
+            c.bytes(),
         );
 
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
