@@ -173,6 +173,12 @@ impl QuantPerm {
             ^ bias_to.bytes()[i];
     }
 
+
+        let map_to_180 = |d: u64| -> u128 {
+    (d as u128)
+        .saturating_mul(180)
+        .saturating_div(u64::MAX as u128)
+};
     // ─────────────────────────────────────────────
     // 3. Resistance magnitude τ (full-field aware)
     // ─────────────────────────────────────────────
