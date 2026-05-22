@@ -47,7 +47,7 @@ pub struct QuantPerm {
 
 pub struct Retain {
     pub mass: u128,
-    pub to: Dimension,
+    pub from: Dimension,
 }
 
 impl QuantPerm {
@@ -68,7 +68,7 @@ impl QuantPerm {
 /// This does not mutate geometry or trigger transitions.
 /// Retained mass influences future work calculations only.
    pub fn retain(&self, mass: u128, to: Dimension) -> Retain {
-        Retain { mass, to}
+        Retain { mass, from}
     }
     /// Initialize dimension from PERM geometry.
     /// Wrap-around semantics explicitly documented.
@@ -93,12 +93,12 @@ impl QuantPerm {
         };
         let origin = euclid.seed_type();
 
-        let from = self.dimension;
+        let from = retain.from;
         let mirror = Mirror::collapse(&euclid, from as u128);
 
         // ── 2. Destination ──
         
-        let to = retain.to;
+        let to = self.dimension;
         let retained_mass = retain.mass;
 
         // ── 3. Physics (FULL) ──
