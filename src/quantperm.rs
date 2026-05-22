@@ -94,7 +94,7 @@ impl QuantPerm {
         let origin = euclid.seed_type();
 
         let from = retain.from;
-        let mirror = Mirror::collapse(&euclid, from as u128);
+        
 
         // ── 2. Destination ──
         
@@ -103,8 +103,8 @@ impl QuantPerm {
 
         // ── 3. Physics (FULL) ──
         let (tau, delta, gross_work) = Self::calculate_work(
+            &euclid,
             retained_mass,
-            mirror.bytes(),
             from,
             to,
         );
@@ -135,27 +135,33 @@ impl QuantPerm {
     /// Work = τ × Δ, where τ = sqrt(E^2 + C^2).
     /// Returns (τ, Δ, gross_work).
     pub fn calculate_work(
+        euclid: &Euclid,
         retained_mass: u128,
-        mirror_bytes: &[u8; 32],
         from: Dimension,
         to: Dimension,
     ) -> (u128, u128, u128) {
         let e = retained_mass;
-        let c = mirror_u128(mirror_bytes);
+        let c = mirror(&euclid.constant());
 
         let gravity =
         Gravity::derive(
             retained_mass,
-            mirror_bytes,
+            euclid.constant(),
         );
 
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
         let tau = gravity.tau;
-        // Full manifold: sum of CW and CCW arcs
-       let delta =
-    (to as u128)
-        .wrapping_sub(from as u128);
 
+    let from_lens =
+    Mirror::collapse(euclid, from as u128);
+
+    let to_lens =
+    Mirror::collapse(euclid, to as u128);
+
+// directional manifold displacement
+let delta =
+    from_lens.as_u128()
+    ^ to_lens.as_u128();
 // ─────────────────────────────────────
 // Energetic traversal cost
 // ─────────────────────────────────────
