@@ -148,7 +148,7 @@ impl QuantPerm {
         to: Dimension,
     ) -> (u128, u128, u128) {
 
-        let c = Mirror::collapse(euclid, from); 
+        let c = Mirror::collapse(euclid, u128::from(from));
         
         let gravity =
         Gravity::derive(
