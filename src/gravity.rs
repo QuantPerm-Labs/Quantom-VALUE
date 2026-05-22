@@ -17,7 +17,10 @@ impl Gravity {
         // τ = sqrt(E² + C²)
 
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
-        let tau = integer_sqrt(e.saturating_mul(e).saturating_add(c.saturating_mul(c)));
+let e2 = (e as u128) * (e as u128);
+let c2 = (c as u128) * (c as u128);
+
+let tau = integer_sqrt(e2 + c2);
 
 
         Gravity { tau }
