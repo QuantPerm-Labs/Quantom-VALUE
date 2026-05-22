@@ -15,10 +15,11 @@ impl Gravity {
         let e = retained_mass;
 
         // τ = sqrt(E² + C²)
-        let tau = integer_sqrt(
-            e.saturating_mul(e)
-                .saturating_add(c.saturating_mul(c))
-        );
+        let c = mirror_u128(mirror_bytes);
+
+        // Resistance magnitude: τ = sqrt(E^2 + C^2)
+        let tau = integer_sqrt(e.saturating_mul(e).saturating_add(c.saturating_mul(c)));
+
 
         Gravity { tau }
     }
