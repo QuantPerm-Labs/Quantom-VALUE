@@ -5,7 +5,7 @@ use crate::gravity::{Gravity};
 use crate::perm::Perm;
 use crate::euclid::{Euclid, SeedType};
 use crate::mirror::Mirror;
-use crate::biasmirror::BiasMirror;
+use crate::mirrorb::BiasMirror;
 pub type Dimension = u64;
 
 /// QuantPerm is a closed thermodynamic state envelope.
