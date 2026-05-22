@@ -147,11 +147,13 @@ impl QuantPerm {
         from: Dimension,
         to: Dimension,
     ) -> (u128, u128, u128) {
+
+        let c = Mirror::collapse(euclid, from); 
         
         let gravity =
         Gravity::derive(
             retained_mass,
-            euclid.constant(),
+            c,
         );
 
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
