@@ -3,6 +3,7 @@ pub struct Gravity {
     pub tau: u128,
 }
 
+impl Gravity{
 pub fn derive(retained_mass: u128, mirror: &[u8; 32]) -> Self {
     let mut lo = [0u8; 16];
     let mut hi = [0u8; 16];
