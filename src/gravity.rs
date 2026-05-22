@@ -3,21 +3,23 @@ pub struct Gravity {
     pub tau: u128,
 }
 
-impl Gravity {
-    pub fn derive(retained_mass: u128, mirror: &[u8; 32]) -> Self {
-        let mut lo = [0u8; 16];
-        let mut hi = [0u8; 16];
-        lo.copy_from_slice(&mirror[..16]);
-        hi.copy_from_slice(&mirror[16..]);
-        let c = u128::from_le_bytes(lo) ^ u128::from_le_bytes(hi);
+pub fn derive(retained_mass: u128, mirror: &[u8; 32]) -> Self {
+    let mut lo = [0u8; 16];
+    let mut hi = [0u8; 16];
+    lo.copy_from_slice(&mirror[..16]);
+    hi.copy_from_slice(&mirror[16..]);
 
-        // τ = sqrt(E² + C²), all operations saturating
-        let e2 = retained_mass.saturating_mul(retained_mass);
-        let c2 = c.saturating_mul(c);
-        let tau = integer_sqrt(e2.saturating_add(c2));
+    let c = u128::from_le_bytes(lo) ^ u128::from_le_bytes(hi);
 
-        Gravity { tau }
-    }
+    const SCALE: u128 = 1 << 32;
+
+    let e2 = retained_mass.saturating_mul(retained_mass) / SCALE;
+    let c2 = c.saturating_mul(c) / SCALE;
+
+    let tau = integer_sqrt(e2.saturating_add(c2));
+
+    Gravity { tau }
+}
 }
 
 /// Deterministic integer square root for u128.
