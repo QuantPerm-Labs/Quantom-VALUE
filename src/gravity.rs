@@ -1,3 +1,5 @@
+use crate::quantperm::mirror_u128;
+
 #[derive(Debug)]
 pub struct Gravity {
     pub tau: u128,
