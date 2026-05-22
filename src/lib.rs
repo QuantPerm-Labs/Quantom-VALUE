@@ -4,7 +4,7 @@ mod euclid;
 mod mirror;
 mod gravity;
 mod observer;
-mod biasmirror;
+mod mirrorb;
 
 
 pub use perm::Perm;
