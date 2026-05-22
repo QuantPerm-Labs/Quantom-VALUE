@@ -144,7 +144,7 @@ impl QuantPerm {
         let gravity =
         Gravity::derive(
             retained_mass,
-            mirror(&euclid.constant()),
+            euclid.constant(),
         );
 
         // Resistance magnitude: τ = sqrt(E^2 + C^2)
