@@ -142,63 +142,32 @@ impl QuantPerm {
     /// Δ = CW + CCW arcs mapped to [0, 180] per arc.
     /// Work = τ × Δ, where τ = sqrt(E^2 + C^2).
     /// Returns (τ, Δ, gross_work).
+
     pub fn calculate_work(
     euclid: &Euclid,
     retained_mass: u128,
     from: Dimension,
     to: Dimension,
 ) -> (u128, u128, u128) {
-
-    // ─────────────────────────────
-    // 1. Mirror field (BIAS SOURCE)
-    // ─────────────────────────────
-    let mirror_from = BiasMirror::collapse(euclid, from as u128);
-    let mirror_to   = BiasMirror::collapse(euclid, to as u128);
-
-    let c_from = mirror_from.as_u128();
-    let c_to   = mirror_to.as_u128();
-
-    // ─────────────────────────────
-    // 2. Gravity field (resistance τ)
-    // ─────────────────────────────
+    let c = Mirror::collapse(euclid, u128::from(from));
     let gravity = Gravity::derive(
         retained_mass,
-        mirror_from.bytes(),
+        c.bytes(),
     );
 
+    // Resistance magnitude: τ = sqrt(E^2 + C^2)
     let tau = gravity.tau;
+    let diff = if to >= from { to - from } else { from - to };
 
-    // ─────────────────────────────
-    // 3. Proper directional curvature
-    // ─────────────────────────────
-
-    let raw_diff = if to >= from {
-        to - from
-    } else {
-        from - to
+    let map_to_180 = |d: u64| -> u128 {
+        (d as u128)
+            .saturating_mul(180)
+            .saturating_div(u64::MAX as u128)
     };
 
-    // Inject geometric asymmetry
-    let bias_diff =
-        (c_from ^ c_to)
-            .wrapping_add(raw_diff as u128);
-
-    // CW path is not mirror of CCW anymore
-    let cw  = bias_diff;
-    let ccw = bias_diff.rotate_left(17) ^ c_to;
-
-    // ─────────────────────────────
-    // 4. Non-symmetric Δ (key fix)
-    // ─────────────────────────────
-
-    let delta = cw
-        .saturating_add(ccw)
-        .saturating_add((c_from & c_to) >> 4);
-
-    // ─────────────────────────────
-    // 5. Gross work
-    // ─────────────────────────────
-
+    let delta_cw = map_to_180(diff);
+    let delta_ccw = map_to_180(u64::MAX - diff);
+    let delta = delta_cw.saturating_add(delta_ccw);
     let gross_work = tau.saturating_mul(delta);
 
     (tau, delta, gross_work)
