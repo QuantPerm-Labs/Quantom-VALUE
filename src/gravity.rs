@@ -22,6 +22,7 @@ impl Gravity {
 
         Gravity { tau }
     }
+}
 
 /// Deterministic integer square root for u128.
 /// Returns the largest x such that x*x ≤ n.
