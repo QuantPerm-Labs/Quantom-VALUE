@@ -163,7 +163,7 @@ impl QuantPerm {
     tau.saturating_mul(delta);
 
 // Full traversal state
-(tau, delta, gross_work)
+(tau, delta, gross_work)}
 
     // ── Read-only observers ──
 
