@@ -178,7 +178,7 @@ impl QuantPerm {
 
 let tau = gravity.tau;
        
-let gross_work = tau.saturating_mul(work_delta);
+let gross_work = tau.saturating_mul(delta);
 
 
     (tau, delta, gross_work)
