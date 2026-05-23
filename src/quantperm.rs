@@ -150,13 +150,9 @@ impl QuantPerm {
     to: Dimension,
 ) -> (u128, u128, u128) {
     let c = BiasMirror::collapse(euclid, u128::from(from));
-    let gravity = Gravity::derive(
-        retained_mass,
-        c.bytes(),
-    );
-
+    
     // Resistance magnitude: τ = sqrt(E^2 + C^2)
-    let tau = gravity.tau;
+    
     let diff = if to >= from { to - from } else { from - to };
 
     let map_to_180 = |d: u64| -> u128 {
@@ -169,6 +165,16 @@ impl QuantPerm {
     let delta_ccw = map_to_180(u64::MAX - diff);
     let delta = delta_cw.saturating_add(delta_ccw);
     let gross_work = tau.saturating_mul(delta);
+
+        let scalar = c.as_u128();
+
+        let gravity = Gravity::derive(
+        retained_mass,
+        scalar,
+    );
+
+        let tau = gravity.tau;
+
 
     (tau, delta, gross_work)
 }
