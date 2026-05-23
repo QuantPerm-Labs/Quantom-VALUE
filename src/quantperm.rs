@@ -164,8 +164,7 @@ impl QuantPerm {
     let delta_cw = map_to_180(diff);
     let delta_ccw = map_to_180(u64::MAX - diff);
     let delta = delta_cw.saturating_add(delta_ccw);
-    let gross_work = tau.saturating_mul(delta);
-
+    
         let scalar = c.as_u128();
 
         let gravity = Gravity::derive(
@@ -174,6 +173,7 @@ impl QuantPerm {
     );
 
         let tau = gravity.tau;
+let gross_work = tau.saturating_mul(delta);
 
 
     (tau, delta, gross_work)
