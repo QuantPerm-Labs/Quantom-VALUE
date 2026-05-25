@@ -100,7 +100,7 @@ impl QuantPerm {
         // ── 2. Destination ──
 
       let forward =
-        BiasMirror::collapse(
+        Mirror::collapse(
             &euclid,
             from as u128,
         );
