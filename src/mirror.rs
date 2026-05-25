@@ -18,6 +18,19 @@ impl Mirror {
         Mirror(out)
     }
 
+
+    /// Produces directional opposite curvature.
+    pub fn invert(&self) -> Self {
+
+        let mut out = [0u8; 32];
+
+        for i in 0..32 {
+            out[i] = !self.0[i];
+        }
+
+        Self(out)
+    }
+
     /// Seed classification passthrough—observer-safe.
     pub fn seed_type(euclid: &Euclid) -> SeedType {
         euclid.seed_type()
