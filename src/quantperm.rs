@@ -47,7 +47,7 @@ pub struct QuantPerm {
 }
 
 pub struct Retain {
-    pub mass: u128,
+    pub mass: TotalMass,
     pub from: Dimension,
 }
 
