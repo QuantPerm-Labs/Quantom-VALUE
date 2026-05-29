@@ -47,7 +47,7 @@ pub struct QuantPerm {
 }
 
 pub struct Retain {
-    pub mass: U128,
+    pub mass: u128,
     pub from: Dimension,
 }
 
@@ -68,7 +68,7 @@ impl QuantPerm {
 ///
 /// This does not mutate geometry or trigger transitions.
 /// Retained mass influences future work calculations only.
-   pub fn retain(&self, mass: U128, from: Dimension) -> Retain {
+   pub fn retain(&self, mass: u128, from: Dimension) -> Retain {
         Retain { mass, from}
     }
     /// Initialize dimension from PERM geometry.
