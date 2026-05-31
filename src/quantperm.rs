@@ -101,7 +101,7 @@ impl QuantPerm {
 
       let forward =
         Mirror::collapse(
-            euclid,
+            &euclid,
             from as u128,
         );
 
