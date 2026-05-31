@@ -88,13 +88,10 @@ impl QuantPerm {
     /// Returns a receipt representing the post-transition field.
   pub fn transition(&mut self, retain: &Retain, provided_seed: Option<&[u8]>) -> TransitionHeritage {
         // ── 1. Field constants ──
-       let seed: &[u8] = match provided_seed {
-        Some(seed) => seed,
-        None => Euclid::genesis().seed(),
-    };
-      let euclid =
-        Euclid::from_seed(seed);
-
+         let euclid = match provided_seed {
+            Some(seed) => Euclid::from_seed(seed),
+            None => *Euclid::genesis(),
+        };
         let origin = euclid.seed_type();
 
         let from = retain.from;
@@ -118,7 +115,7 @@ impl QuantPerm {
 
         // ── 3. Physics (FULL) ──
         let (tau, delta, gross_work) = Self::calculate_work(
-            &seed,
+            &euclid,
             retained_mass,
             from,
             to,
@@ -151,7 +148,7 @@ impl QuantPerm {
     /// Returns (τ, Δ, gross_work).
 
     pub fn calculate_work(
-    seed: &[u8; 32],
+    seed: &euclid,
     retained_mass: u128,
     from: Dimension,
     to: Dimension,
