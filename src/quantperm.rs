@@ -148,7 +148,7 @@ impl QuantPerm {
     /// Returns (τ, Δ, gross_work).
 
     pub fn calculate_work(
-    seed: &euclid,
+    seed: &Euclid,
     retained_mass: u128,
     from: Dimension,
     to: Dimension,
