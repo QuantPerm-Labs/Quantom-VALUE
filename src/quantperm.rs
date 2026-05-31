@@ -144,11 +144,13 @@ impl QuantPerm {
     /// Returns (τ, Δ, gross_work).
 
     pub fn calculate_work(
-    euclid: &Euclid,
+    seed: &[u8; 32],
     retained_mass: u128,
     from: Dimension,
     to: Dimension,
-) -> (u128, u128, u128) {
+) -> (u128, u128, u128){
+        
+    let euclid = Euclid::from_seed(seed);
     let c = BiasMirror::collapse(euclid, u128::from(from));
     let scalar = c.as_u128();
     // Resistance magnitude: τ = sqrt(E^2 + C^2)
