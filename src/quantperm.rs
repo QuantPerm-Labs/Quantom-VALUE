@@ -101,10 +101,7 @@ impl QuantPerm {
 
       let forward =
         Mirror::collapse(
-            match provided_seed {
-                Some(seed) => &Euclid::from_seed(seed),
-                None => Euclid::genesis(),
-            },
+            euclid,
             from as u128,
         );
 
