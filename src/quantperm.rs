@@ -151,7 +151,7 @@ impl QuantPerm {
 ) -> (u128, u128, u128){
         
     let euclid = Euclid::from_seed(seed);
-    let c = BiasMirror::collapse(euclid, u128::from(from));
+    let c = BiasMirror::collapse(&euclid, u128::from(from));
     let scalar = c.as_u128();
     // Resistance magnitude: τ = sqrt(E^2 + C^2)
     
