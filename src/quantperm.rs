@@ -134,16 +134,16 @@ impl QuantPerm {
         self.activation_count += 1;
 
         // ── 6. Return FULL RECEIPT ──
-      Heritage {
-    state: self,
-        TransitionHeritage {
-            tau,
-            delta,
-            gross_work,
-            net_work,
-            origin,
-        }
-    }
+     Heritage {
+     state: self,
+     transition: TransitionHeritage {
+        tau,
+        delta,
+        gross_work,
+        net_work,
+        origin,
+    },
+  }
 }
     
     /// physics: total-manifold work for a transition.
