@@ -29,6 +29,12 @@ pub type Dimension = u64;
 /// amortized by Σ; post-quantum anchoring preserved.
 
 #[repr(C)]
+pub struct QP44Event {
+    pub heritage: Heritage,
+    pub qtm: Qtm,
+}
+
+#[repr(C)]
 #[derive(Debug)]
 pub struct TransitionHeritage {
     pub tau: u128,
@@ -128,6 +134,8 @@ impl QuantPerm {
         self.activation_count += 1;
 
         // ── 6. Return FULL RECEIPT ──
+      Heritage {
+    state: self,
         TransitionHeritage {
             tau,
             delta,
@@ -136,7 +144,7 @@ impl QuantPerm {
             origin,
         }
     }
-
+}
     
     /// physics: total-manifold work for a transition.
     ///
