@@ -29,9 +29,9 @@ pub type Dimension = u64;
 /// amortized by Σ; post-quantum anchoring preserved.
 
 #[repr(C)]
-pub struct QP44Event {
-    pub heritage: Heritage,
-    pub qtm: Qtm,
+pub struct Heritage {
+    pub state: QuantPerm,
+    pub transition: TransitionHeritage,
 }
 
 #[repr(C)]
