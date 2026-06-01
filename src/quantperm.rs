@@ -92,7 +92,7 @@ impl QuantPerm {
     /// - dimensional mutation
     ///
     /// Returns a receipt representing the post-transition field.
-  pub fn transition(&mut self, retain: &Retain, provided_seed: Option<&[u8]>) -> TransitionHeritage {
+  pub fn transition(&mut self, retain: &Retain, provided_seed: Option<&[u8]>) -> Heritage {
         // ── 1. Field constants ──
          let euclid = match provided_seed {
             Some(seed) => Euclid::from_seed(seed),
