@@ -12,7 +12,7 @@ impl QuantPerm {
     
         // 2. Current coordinate
 
-        let from = heritage.state.dimension();
+        let from = self.dimension();
 
         // 3. Repulsive displacement
 
