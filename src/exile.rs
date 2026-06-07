@@ -4,10 +4,6 @@ use crate::euclid::Euclid;
 use crate::gravity::Gravity;
 use crate::mirrorb::BiasMirror;
 
-pub struct PQ44Event {
-    pub heritage: Heritage,
-}
-
 impl QuantPerm {
 
     pub fn exile(& mut self, heritage: &Heritage, euclid: &Euclid) -> Option<Heritage> {
