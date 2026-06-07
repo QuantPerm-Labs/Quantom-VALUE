@@ -10,7 +10,7 @@ pub struct PQ44Event {
 
 impl QuantPerm {
 
-    pub fn exile(& mut self, heritage: &Heritage, euclid: &Euclid,) -> Option<PQ44Event> {
+    pub fn exile(& mut self, heritage: &Heritage, euclid: &Euclid) -> Option<Heritage> {
 
         //  1. Authenticate projection
     
@@ -69,7 +69,7 @@ impl QuantPerm {
 
         // 9. Forensic projection
 
-       Some(PQ44Event {heritage})
+        Some(heritage)
     }
 
     pub fn calculate_work(
