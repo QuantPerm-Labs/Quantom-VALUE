@@ -1,26 +1,19 @@
-pub struct Mtq {
-    pub commitment: [u8; 32],
-    pub coordinate: [u8; 32],
-    pub net_work: u128,
-    pub sigma: u128,
-}
+use crate::{QuantPerm,Heritage, TransitionHeritage, Dimension};
 
-pub struct PQ44Event{
-    pub heritage: Heritage<'a>,
-    pub mtq: Qtm,
+use crate::euclid::Euclid;
+use crate::gravity::Gravity;
+use crate::mirrorb::BiasMirror;
+
+pub struct PQ44Event {
+    pub heritage: Heritage,
 }
 
 impl QuantPerm {
 
-    pub fn exile(&'a mut self, heritage: &'a Heritage, incoming: &Qtm, euclid: &Euclid,) -> Option<PQ44Event<'a>> {
+    pub fn exile(& mut self, heritage: &Heritage, euclid: &Euclid,) -> Option<PQ44Event> {
 
         //  1. Authenticate projection
-        let expected = Qtm::economy(heritage);
-
-        if incoming.commitment != expected.commitment {
-            return None;
-        }
-
+    
         // 2. Current coordinate
 
         let from = heritage.state.dimension();
@@ -76,18 +69,7 @@ impl QuantPerm {
 
         // 9. Forensic projection
 
-        let mtq =
-            Qtm::commit(
-                heritage.state,
-                heritage.transition.net_work,
-            );
-
-        Some(
-            PQ44Event {
-                heritage,
-                mtq,
-            }
-        )
+       Some(PQ44Event {heritage})
     }
 
     pub fn calculate_work(
