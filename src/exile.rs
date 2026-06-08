@@ -27,7 +27,7 @@ impl QuantPerm {
             );
 
         let to = inverse.as_u128() as Dimension;
-        let mirror_bytes = inverse.bytes()
+        let mirror_bytes = inverse.bytes();
 
         // 3. Fresh inverse physics derived purely from internal state mass
         let (tau, delta, gross_work,
