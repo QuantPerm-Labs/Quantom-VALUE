@@ -45,11 +45,11 @@ pub struct TransitionHeritage {
 }
 
 pub struct QuantPerm {
-    perm: Perm,
-    retained_mass: u128,    // E: conserved inertia
-    activation_count: u64,  // transition count
-    dimension: Dimension,   // angular coordinate
-    structural_value: u128, // Σ: accumulated work residue
+    pub(crate) perm: Perm,
+    pub(crate) retained_mass: u128,    // E: conserved inertia
+    pub(crate) activation_count: u64,  // transition count
+    pub(crate) dimension: Dimension,   // angular coordinate
+    pub(crate) structural_value: u128, // Σ: accumulated work residue
 }
 
 pub struct Retain {
