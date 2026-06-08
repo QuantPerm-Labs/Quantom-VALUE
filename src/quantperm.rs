@@ -116,8 +116,7 @@ impl QuantPerm {
         let to =
         forward.as_u128() as Dimension;
         let retained_mass = retain.mass;
-
-       let mirror_bytes = forward.bytes();
+       let mirror_bytes = *forward.bytes();
        let mirror_scalar = forward.as_u128();
 
         // ── 3. Physics (FULL) ──
