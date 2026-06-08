@@ -41,7 +41,7 @@ pub struct TransitionHeritage {
     pub delta: u128,
     pub gross_work: u128,
     pub net_work: u128,
-    pub origin: SeedType
+    pub origin: SeedType,
     pub mirror_bytes: [u8; 32],
 }
 
