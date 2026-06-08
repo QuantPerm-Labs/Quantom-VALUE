@@ -27,13 +27,12 @@ impl QuantPerm {
             );
 
         let to = inverse.as_u128() as Dimension;
-        let payload = heritage.transition.tau;
 
         // 3. Fresh inverse physics derived purely from internal state mass
         let (tau, delta, gross_work,
         ) = Self::calculate_work(
             euclid,
-            payload,
+            self.retained_mass,
             from,
             to,
         );
