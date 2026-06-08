@@ -116,9 +116,11 @@ impl QuantPerm {
         forward.as_u128() as Dimension;
         let retained_mass = retain.mass;
 
+       let mirror_bytes = forward.bytes();
+
         // ── 3. Physics (FULL) ──
         let (tau, delta, gross_work) = Self::calculate_work(
-            &euclid,
+            mirror_bytes,
             retained_mass,
             from,
             to,
@@ -153,14 +155,12 @@ impl QuantPerm {
     /// Returns (τ, Δ, gross_work).
 
     pub fn calculate_work(
-    seed: &Euclid,
+    mirror_bytes: &[u8; 32],
     retained_mass: u128,
     from: Dimension,
     to: Dimension,
 ) -> (u128, u128, u128){
-        
-    let c = BiasMirror::collapse(&seed, u128::from(from));
-    let scalar = c.as_u128();
+
     // Resistance magnitude: τ = sqrt(E^2 + C^2)
     
     let diff = if to >= from { to - from } else { from - to };
@@ -182,13 +182,13 @@ impl QuantPerm {
 
         let gravity = Gravity::derive(
         retained_mass,
-        scalar,
-        delta,
+        mirror_bytes,
+        work_delta,
     );
 
 let tau = gravity.tau;
        
-let gross_work = tau.saturating_mul(delta);
+let gross_work = tau.saturating_mul(work_delta);
 
 
     (tau, delta, gross_work)
