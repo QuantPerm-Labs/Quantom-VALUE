@@ -42,6 +42,7 @@ pub struct TransitionHeritage {
     pub gross_work: u128,
     pub net_work: u128,
     pub origin: SeedType
+    pub mirror_bytes: [u8; 32],
 }
 
 pub struct QuantPerm {
