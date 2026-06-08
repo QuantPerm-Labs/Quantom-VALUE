@@ -6,7 +6,7 @@ use crate::mirrorb::BiasMirror;
 
 impl QuantPerm {
 
-    pub fn exile( mut self, heritage: &Heritage, euclid: &Euclid) -> Option<Heritage> {
+    pub fn exile( mut self, heritage: &Heritage, euclid: &Euclid) -> Heritage {
 
         //  1. Authenticate projection
     
