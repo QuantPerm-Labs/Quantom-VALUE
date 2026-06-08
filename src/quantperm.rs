@@ -117,10 +117,11 @@ impl QuantPerm {
         let retained_mass = retain.mass;
 
        let mirror_bytes = forward.bytes();
+       let mirror_scalar = forward.as_u128();
 
         // ── 3. Physics (FULL) ──
         let (tau, delta, gross_work) = Self::calculate_work(
-            mirror_bytes,
+            mirror_scalar,
             retained_mass,
             from,
             to,
@@ -155,7 +156,7 @@ impl QuantPerm {
     /// Returns (τ, Δ, gross_work).
 
     pub fn calculate_work(
-    mirror_bytes: &[u8; 32],
+    mirror_scalar: u128,
     retained_mass: u128,
     from: Dimension,
     to: Dimension,
@@ -177,9 +178,6 @@ impl QuantPerm {
 
     let work_delta =
         delta_cw.saturating_add(delta_ccw);
-
-    let mirror_scalar = Self::mirror_u128(mirror_bytes);
-
     
 
         let gravity = Gravity::derive(
