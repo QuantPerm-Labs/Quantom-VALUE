@@ -178,11 +178,13 @@ impl QuantPerm {
     let work_delta =
         delta_cw.saturating_add(delta_ccw);
 
+    let mirror_scalar = Self::mirror_u128(mirror_bytes);
+
     
 
         let gravity = Gravity::derive(
         retained_mass,
-        mirror_bytes,
+        mirror_scalar,
         work_delta,
     );
 
