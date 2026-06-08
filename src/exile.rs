@@ -27,11 +27,12 @@ impl QuantPerm {
             );
 
         let to = inverse.as_u128() as Dimension;
+        let mirror_bytes = inverse.bytes()
 
         // 3. Fresh inverse physics derived purely from internal state mass
         let (tau, delta, gross_work,
         ) = Self::calculate_work(
-            euclid,
+            mirror_bytes,
             self.retained_mass,
             from,
             to,
