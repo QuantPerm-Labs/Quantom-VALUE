@@ -145,6 +145,7 @@ impl QuantPerm {
         gross_work,
         net_work,
         origin,
+        mirror_bytes, // ◄─ Captured
     },
   }
 }
