@@ -64,6 +64,7 @@ impl QuantPerm {
                 gross_work,
                 net_work,
                 origin: euclid.seed_type(),
+                mirror_bytes,
             };
 
         Heritage {
