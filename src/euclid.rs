@@ -11,7 +11,7 @@ pub enum SeedType {
 
 /// Euclid enforces the constant and seed classification.
 #[derive(Clone, Copy)]
-pub(super) struct Euclid {
+pub struct Euclid {
     constant: [u8; 32],
     seed: SeedType,
 }
