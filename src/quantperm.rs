@@ -101,7 +101,8 @@ impl QuantPerm {
         };
         let origin = euclid.seed_type();
 
-        let from = retain.from;
+        let from = self.dimension;
+        let to = retain.from;
         
 
         // ── 2. Destination ──
@@ -109,7 +110,7 @@ impl QuantPerm {
       let forward =
         Mirror::collapse(
             &euclid,
-            from as u128,
+            to as u128,
         );
 
         
