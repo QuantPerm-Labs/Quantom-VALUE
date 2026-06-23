@@ -1,37 +1,46 @@
-use crate::{QuantPerm, Heritage, TransitionHeritage,Dimension,
+use crate::{
+    QuantPerm,
+    Heritage,
+    TransitionHeritage,
+    Dimension,
 };
-
-use crate::euclid::Euclid;
-use crate::gravity::Gravity;
-use crate::mirrorb::BiasMirror;
 
 impl QuantPerm {
 
-    /// Pure State-Driven Thermodynamic Decay
+    /// Pure Geometric Return
     ///
-    /// The decay path is determined
-    /// solely by the current state variables 
+    /// Exile returns a realized manifold from its
+    /// current witness coordinate back to the
+    /// canonical coordinate encoded by its PERM.
+    ///
+    /// No external projections.
+    /// No mirror collapse.
+    /// No ledger lookups.
+    /// No memory dependencies.
+    ///
+    /// The return path is derived entirely from
+    /// the manifold's current state.
     pub fn exile(
         mut self,
-        euclid: &Euclid,
     ) -> Heritage {
 
-        // 1. Current coordinate
+        // 1. Preserve the currently observed coordinate
         let from = self.dimension();
 
-        // 2. Inverse projection from configuration space
-        let inverse =
-            BiasMirror::collapse(
-                euclid,
-                from as u128,
-            );
+        // 2. Restore the genesis geometry encoded by PERM
+        self.set_initial_dimension_from_perm();
 
-        let to = inverse.as_u128() as Dimension;
-        let mirror_bytes = *inverse.bytes();
-        let mirror_scalar = inverse.as_u128();
-        
-        // 3. Fresh inverse physics derived purely from internal state mass
-        let (tau, delta, gross_work,
+        // 3. Canonical origin coordinate
+        let to = self.dimension();
+
+        let mirror_scalar = to as u128;
+        let mirror_bytes = to.to_le_bytes();
+
+        // 4. Compute return work
+        let (
+            tau,
+            delta,
+            gross_work,
         ) = Self::calculate_work(
             mirror_scalar,
             self.retained_mass,
@@ -39,7 +48,7 @@ impl QuantPerm {
             to,
         );
 
-        // 4. Structural amortization against current structural value
+        // 5. Structural amortization
         let net_work =
             gross_work.saturating_sub(
                 self.structural_value(),
@@ -49,21 +58,21 @@ impl QuantPerm {
             self.structural_value
                 .saturating_add(net_work);
 
-        // 5. Commit state mutations to the current consumed instance
+        // 6. Commit state mutations
         self.retained_mass = tau;
         self.dimension = to;
         self.activation_count =
             self.activation_count
                 .saturating_sub(1);
 
-        // 6. Return a pristine deterministic receipt
+        // 7. Deterministic return receipt
         let transition =
             TransitionHeritage {
                 tau,
                 delta,
                 gross_work,
                 net_work,
-                origin: euclid.seed_type(),
+                origin: self.perm.seed_type(),
                 mirror_bytes,
             };
 
