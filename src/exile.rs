@@ -34,9 +34,17 @@ impl QuantPerm {
         let to = self.dimension();
 
         let mirror_scalar = to as u128;
-        let mirror_bytes = to.to_le_bytes();
 
-        // 4. Compute return work
+        // 4. Expand the canonical coordinate into a
+        //    deterministic 32-byte mirror representation
+        let mut mirror_bytes = [0u8; 32];
+
+        mirror_bytes[..16]
+            .copy_from_slice(
+                &mirror_scalar.to_le_bytes()
+            );
+
+        // 5. Compute return work
         let (
             tau,
             delta,
@@ -48,7 +56,7 @@ impl QuantPerm {
             to,
         );
 
-        // 5. Structural amortization
+        // 6. Structural amortization
         let net_work =
             gross_work.saturating_sub(
                 self.structural_value(),
@@ -58,21 +66,20 @@ impl QuantPerm {
             self.structural_value
                 .saturating_add(net_work);
 
-        // 6. Commit state mutations
+        // 7. Commit state mutations
         self.retained_mass = tau;
         self.dimension = to;
         self.activation_count =
             self.activation_count
                 .saturating_sub(1);
 
-        // 7. Deterministic return receipt
+        // 8. Deterministic return receipt
         let transition =
             TransitionHeritage {
                 tau,
                 delta,
                 gross_work,
                 net_work,
-                origin: self.perm.seed_type(),
                 mirror_bytes,
             };
 
