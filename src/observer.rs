@@ -8,7 +8,7 @@ pub struct DimensionObservation {
     pub dimension: Dimension,
     pub structural_value: u128, // Σ — stored work / credit
     pub activations: u64,       // Sequential transition count
-    pub seed: SeedType,         // Governing physics
+         // Governing physics
 }
 
 /// Read-only optical lens over QuantPerm.
@@ -28,7 +28,6 @@ impl Observer {
             dimension: qp.dimension(),
             structural_value: qp.structural_value(),
             activations: qp.activations(),
-            seed: euclid.seed_type(), // ✅ correct accessor
         }
     }
 
