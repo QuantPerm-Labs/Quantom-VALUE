@@ -57,11 +57,10 @@ impl QuantPerm {
         );
 
         // 6. Structural amortization
-        let gross_work =
-        net_work.saturating_sub(
+        let net_work =
+        gross_work.saturating_sub(
         self.structural_value
         );
-
          self.structural_value =
          self.structural_value
          .saturating_add(
