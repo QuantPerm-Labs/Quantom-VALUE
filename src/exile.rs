@@ -57,14 +57,15 @@ impl QuantPerm {
         );
 
         // 6. Structural amortization
-        let net_work =
-        gross_work.saturating_sub(
-        self.structural_value
-        );
+         let net_work =
+         gross_work.min(
+         self.structural_value,
+         );
+
          self.structural_value =
          self.structural_value
-         .saturating_add(
-            gross_work
+        .saturating_sub(
+            net_work,
         );
 
         // 7. Commit state mutations
