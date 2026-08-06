@@ -58,8 +58,8 @@ impl QuantPerm {
 
         // 6. Structural amortization
          let net_work =
-         gross_work.min(
-         self.structural_value,
+         if delta == 0{tau} else (
+          tau.saturating_div(delta)
          );
 
          self.structural_value =
