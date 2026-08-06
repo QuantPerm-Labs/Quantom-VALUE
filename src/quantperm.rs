@@ -127,8 +127,8 @@ impl QuantPerm {
         );
 
        // ── 4. Σ credit ──
-        let net_work = gross_work.saturating_sub(self.structural_value);
-        self.structural_value = self.structural_value.saturating_add(net_work);
+        let net_work = if delta == 0{tau} else {tau.saturating_div(delta);
+        self.structural_value = self.structural_value.saturating_add(gross_work);
       
         // ── 5. Commit state ──
         self.retained_mass = retained_mass;
