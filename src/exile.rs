@@ -57,10 +57,11 @@ impl QuantPerm {
         );
 
         // 6. Structural amortization
-         let net_work =
-         if delta == 0{tau} else (
-          tau.saturating_div(delta)
-         );
+         let net_work = if delta == 0 {
+         tau
+         } else {
+         tau.saturating_div(delta)
+         };
 
          self.structural_value =
          self.structural_value
