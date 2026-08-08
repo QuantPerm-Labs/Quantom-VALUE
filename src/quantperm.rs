@@ -92,64 +92,64 @@ impl QuantPerm {
     /// - dimensional mutation
     ///
     /// Returns a receipt representing the post-transition field.
-  pub fn transition( mut self, retain: &Retain, provided_seed: Option<&[u8]>) -> Heritage {
-        // ── 1. Field constants ──
-         let euclid = match provided_seed {
-            Some(seed) => Euclid::from_seed(seed),
-            None => *Euclid::genesis(),
-        };
+    pub fn transition(mut self,
+    retain: &Retain,
+    provided_seed: Option<&[u8]>,
+    ) -> Heritage {
+    // ── 1. Field constants ──
+    let euclid = match provided_seed {
+        Some(seed) => Euclid::from_seed(seed),
+        None => *Euclid::genesis(),
+    };
 
-        let from = self.dimension;
-        let to = retain.from;
-        
+    let from = self.dimension;
+    let to = retain.from;
 
-        // ── 2. Destination ──
+    // ── 2. Destination ──
+    let forward = Mirror::collapse(
+        &euclid,
+        to as u128,
+    );
 
-      let forward =
-        Mirror::collapse(
-            &euclid,
-            to as u128,
-        );
+    let to = forward.as_u128() as Dimension;
+    let retained_mass = retain.mass;
+    let mirror_bytes = *forward.bytes();
+    let mirror_scalar = forward.as_u128();
 
-        
-        let to =
-        forward.as_u128() as Dimension;
-        let retained_mass = retain.mass;
-       let mirror_bytes = *forward.bytes();
-       let mirror_scalar = forward.as_u128();
+    // ── 3. Physics (FULL) ──
+    let (tau, delta, gross_work) = Self::calculate_work(
+        mirror_scalar,
+        retained_mass,
+        from,
+        to,
+    );
 
-        // ── 3. Physics (FULL) ──
-        let (tau, delta, gross_work) = Self::calculate_work(
-            mirror_scalar,
-            retained_mass,
-            from,
-            to,
-        );
+    // ── 4. Σ credit ──
+    let net_work = if delta == 0 {
+        tau
+    } else {
+        tau.saturating_div(delta)
+    };
 
-       // ── 4. Σ credit ──
+    self.structural_value =
+        self.structural_value.saturating_add(gross_work);
 
-        let net_work = if delta == 0 {
-         tau
-        } else {
-        tau.saturating_div(delta)};
-        self.structural_value = self.structural_value.saturating_add(gross_work);
-      
-        // ── 5. Commit state ──
-        self.retained_mass = retained_mass;
-        self.dimension = to;
-        self.activation_count += 1;
+    // ── 5. Commit state ──
+    self.retained_mass = retained_mass;
+    self.dimension = to;
+    self.activation_count += 1;
 
-        // ── 6. Return FULL RECEIPT ──
-     Heritage {
-     state: self,
-     transition: TransitionHeritage {
-        tau,
-        delta,
-        gross_work,
-        net_work,
-        mirror_bytes, // ◄─ Captured
-    },
-  }
+    // ── 6. Return FULL RECEIPT ──
+    Heritage {
+        state: self,
+        transition: TransitionHeritage {
+            tau,
+            delta,
+            gross_work,
+            net_work,
+            mirror_bytes,
+        },
+    }
 }
     
     /// physics: total-manifold work for a transition.
